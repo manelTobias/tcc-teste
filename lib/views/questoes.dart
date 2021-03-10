@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:ifeventos/views/simulados.dart';
 
 class Questoes extends StatefulWidget {
   @override
@@ -9,11 +7,15 @@ class Questoes extends StatefulWidget {
 }
 
 class _QuestoesState extends State<Questoes> {
-  int index = 0;
-  final questao = GetStorage().read('simulado');
+  
+  int _index = 0;
+  bool _simuladoFinalizado = false;
+  final box = GetStorage();
+  List<Map> simulado = [];
+
   @override
   void initState() {
-    print(questao);
+    setState(() => simulado = box.read('simulado'));
     super.initState();
   }
   @override
@@ -21,23 +23,68 @@ class _QuestoesState extends State<Questoes> {
     return Scaffold(
       backgroundColor: Color(0xffffff),
       appBar: AppBar(
-      toolbarHeight: 100,
+        toolbarHeight: _simuladoFinalizado ? 60 : 100,
+        title: _simuladoFinalizado ? 
+        Text("Simulado Finalizado") :
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text("Questão ${_index+1}"),
+            Text("Área: X", style: TextStyle(fontSize: 14)),
+            Text("Assunto: ${simulado[_index]["assunto"]}", style: TextStyle(fontSize: 14)),
+          ]
+        ),
       ),
       body: Container(
         width: double.maxFinite,
         color: Colors.white,
-        child:
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        child:_simuladoFinalizado ? 
+          Center(
+            child: Text("Simulado Finalizado!", style: TextStyle(fontSize: 18))
+          ) :
           ListView(
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                child: Text("questao[index].data.toString()")
-              ),
+              Text(simulado[_index]["enunciado"], style: TextStyle(fontSize: 16)),
+
+              if(simulado[_index]["alternativas"].keys.contains("E"))
+                opcao(descricao: simulado[_index]["alternativas"]["A"]["descricao"].toString()),
+              
+              if(simulado[_index]["alternativas"].keys.contains("B"))
+                opcao(descricao: simulado[_index]["alternativas"]["B"]["descricao"].toString()),
+              
+              if(simulado[_index]["alternativas"].keys.contains("C"))
+                opcao(descricao: simulado[_index]["alternativas"]["C"]["descricao"].toString()),
+
+              if(simulado[_index]["alternativas"].keys.contains("D"))
+                opcao(descricao: simulado[_index]["alternativas"]["D"]["descricao"].toString()),
+
+              if(simulado[_index]["alternativas"].keys.contains("E"))
+                opcao(descricao: simulado[_index]["alternativas"]["E"]["descricao"].toString())
             ] 
           )
-
-
       )
+    );
+  }
+
+  Widget opcao({ @required String descricao }) {
+    return FlatButton(
+      padding: EdgeInsets.symmetric(vertical: 5),
+      color: Colors.grey[300],
+      child: Text(
+        descricao,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 16)
+      ),
+      onPressed: () {
+        // TODO: salvar resposta no local
+        setState(() {
+          if(_index + 1 < simulado.length)
+            _index++;
+          else 
+            _simuladoFinalizado = true;
+        });
+      },
     );
   }
 }

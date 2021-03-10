@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ifeventos/views/simulados.dart';
 
+import 'simulados.dart';
+
 class Principal extends StatelessWidget {
 
 
@@ -40,7 +42,7 @@ class Principal extends StatelessWidget {
                   onPressed: (){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Simulados()),
+                      MaterialPageRoute(builder: (context) => SimuladoScreen()),
                     );
                   },
                 )
