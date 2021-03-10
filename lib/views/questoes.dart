@@ -47,7 +47,7 @@ class _QuestoesState extends State<Questoes> {
             children: <Widget>[
               Text(simulado[_index]["enunciado"], style: TextStyle(fontSize: 16)),
 
-              if(simulado[_index]["alternativas"].keys.contains("E"))
+              if(simulado[_index]["alternativas"].keys.contains("A"))
                 opcao(descricao: simulado[_index]["alternativas"]["A"]["descricao"].toString()),
               
               if(simulado[_index]["alternativas"].keys.contains("B"))
